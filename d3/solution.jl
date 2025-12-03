@@ -30,7 +30,6 @@ function max_n_digit_list_search(num_str::String, res_len::Int=2)::Int
 end
 
 function max_n_digit_stack_search(num_str::String, res_len::Int)::Int
-    # a quicker implementation
     num_digits = [c - '0' for c in num_str]   # array of Ints from Chars; works only for digits!
     n = length(num_str)
     stack = Vector{Int}()

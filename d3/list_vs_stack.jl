@@ -1,5 +1,5 @@
 ################################################
-# testing speed part: is numerical or string way better?
+# testing speed part: List vs Stack (Dynamic & Allocated) for day 3 problem
 ################################################
 using BenchmarkTools
 
