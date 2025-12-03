@@ -89,7 +89,6 @@ function main()
 end
 
 
-# Run main if script is executed directly
 if abspath(PROGRAM_FILE) == @__FILE__
     main()
 end
