@@ -30,8 +30,8 @@ end
 function show_step(mat, step)
 	print("\033[2J\033[H")   # clear screen + move cursor home
 	println("Step $step")
-	print_rolls_map_aligned(mat)
-	sleep(0.1)              # adjust animation speed
+	print_rolls_map_aligned(mat, NEIGHBOUR_THR+1)
+	sleep(0.05)
 end
 
 function get_kernel(shift::Int)::Matrix{Int8}
@@ -87,9 +87,9 @@ function im_filter_convolution(mat::Matrix, shift::Int = NEIGHBOURS_DIST)::Matri
 end
 
 function find_n_rolls_removed(mat::Matrix{Int8}, shift::Int = NEIGHBOURS_DIST, thr::Int = NEIGHBOUR_THR)::Tuple{Matrix, Int}
-	res_matrix = dsp_convolution(mat, NEIGHBOURS_DIST) # the quickest of three
+	res_matrix = dsp_convolution(mat, shift) # the quickest of three
 	# order matters: if multiplied first, we don't tell "no neighbours" and "empty" apart!
-	res_matrix_thr_bool = (res_matrix .< NEIGHBOUR_THR)
+	res_matrix_thr_bool = (res_matrix .< thr)
 	n_rolls = sum(res_matrix_thr_bool .* mat)
 	return res_matrix, n_rolls
 end
@@ -110,7 +110,7 @@ function main()
 	while removed_this_step != 0
 		res_matrix, removed_this_step = find_n_rolls_removed(temp_matrix)
 
-		show_step(temp_matrix, n_steps)   # <<< animation frame
+		show_step((res_matrix .+ 1) .* temp_matrix, n_steps)   # <<< animation frame
 
 		total_rolls_removed += removed_this_step
 		temp_matrix[res_matrix .< NEIGHBOUR_THR] .= 0
@@ -119,7 +119,7 @@ function main()
 	end
 	println("Total rolls removed: $total_rolls_removed after $n_steps steps.")
 	println("Resulting map:")
-	print_rolls_map_aligned(temp_matrix, NEIGHBOUR_THR)
+	print_rolls_map_aligned((res_matrix .+ 1) .* temp_matrix, NEIGHBOUR_THR+1)
 
 	return res_n
 end
